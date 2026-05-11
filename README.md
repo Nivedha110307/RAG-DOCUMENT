@@ -218,4 +218,4 @@ rag-document-qa/
 
 ## 📄 License
 
-MIT © 2024 [Your Name]
+MIT © 2024 Nivedha M
