@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: sk-test-dummy-key
+      SECRET_KEY: ci-test-secret-key-minimum-32-chars
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint with Ruff
+        run: ruff check backend/ tests/
+
+      - name: Type check with mypy
+        run: mypy backend/ --ignore-missing-imports
+
+      - name: Run tests with coverage
+        run: pytest tests/ --cov=backend --cov-report=xml -v
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
